@@ -1,0 +1,19 @@
+/* Définit la hauteur minimale du body à 4096px */
+body {
+    min-height: 4096px;
+    margin: 0;
+}
+
+/* Style du footer */
+footer {
+    position: fixed;  /* Fixé en bas de la page */
+    bottom: 0;
+    left: 0;
+    width: 100%;  /* Prend toute la largeur */
+    height: 50px;  /* Hauteur du footer */
+    background-color: #000;  /* Couleur de départ */
+    color: white;
+    text-align: center;
+    line-height: 50px;  /* Centrer verticalement le texte */
+    font-family: Arial, sans-serif;
+}

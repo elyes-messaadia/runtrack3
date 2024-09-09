@@ -7,7 +7,7 @@
     <script>
         alert("Hello Javascript!");
     </script>
-    <title>Document</title>
+    <title>Job01</title>
 </head>
 
 <body>
