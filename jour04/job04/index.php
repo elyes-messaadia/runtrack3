@@ -1,55 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job06</title>
+    <title>Utilisateurs</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+    </style>
 </head>
-
 <body>
-    <h1>Bienvenue à La Plateforme_ !</h1>
-    <p>Entrez le code Konami pour changer le style de la page.</p>
+
+    <h1>Liste des utilisateurs</h1>
+
+    <!-- Bouton pour mettre à jour le tableau -->
+    <button id="updateButton">Update</button>
+
+    <!-- Tableau pour afficher les utilisateurs -->
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Les lignes des utilisateurs seront insérées ici -->
+        </tbody>
+    </table>
 
     <script>
-        // Séquence du code Konami
-        const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
-        /* Haut, Haut, 
-                Bas, Bas, 
-                    Gauche, Droite, 
-                    Gauche, Droite,
-                                   B, A*/
+        // Fonction pour mettre à jour le tableau avec les données des utilisateurs
+        function updateTable() {
+            // Utiliser Fetch pour récupérer les utilisateurs depuis users.php
+            fetch('users.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Erreur lors de la récupération des utilisateurs.");
+                    }
+                    return response.json(); // Convertir la réponse en JSON
+                })
+                .then(data => {
+                    const tbody = document.querySelector('#userTable tbody');
+                    tbody.innerHTML = ''; // Vider le tableau avant d'ajouter les nouvelles données
 
-        // Tableau pour stocker la séquence tapée par l'utilisateur
-        let userInput = [];
-
-        // Écouter les touches appuyées sur le document
-        document.addEventListener('keydown', function(event) {
-            // Afficher la touche pressée dans la console
-            console.log("Touche appuyée : " + event.key);
-
-            // Ajouter la touche pressée dans le tableau (event.keyCode correspond à la touche)
-            userInput.push(event.keyCode);
-
-            // Si la séquence dépasse la longueur du code Konami, on enlève les premières entrées
-            if (userInput.length > konamiCode.length) {
-                userInput.shift(); // Supprimer le premier élément du tableau pour maintenir la longueur
-            }
-
-            // Vérifier si la séquence correspond au code Konami
-            if (JSON.stringify(userInput) === JSON.stringify(konamiCode)) {
-                activateKonamiCode(); // Appeler la fonction qui stylise la page
-            }
-        });
-
-        // Fonction à exécuter lorsque le code Konami est détecté
-        function activateKonamiCode() {
-            // Changer le fond de la page aux couleurs de La Plateforme_
-            document.body.style.backgroundColor = "#007bff"; // Bleu vif
-            document.body.style.color = "#ffffff"; // Texte en blanc
-            alert("Code Konami détecté ! La page est maintenant aux couleurs de La Plateforme_.");
+                    // Boucler sur les utilisateurs et créer une ligne pour chaque utilisateur
+                    data.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${user.id}</td>
+                                         <td>${user.nom}</td>
+                                         <td>${user.prenom}</td>
+                                         <td>${user.email}</td>`;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error("Erreur :", error);
+                });
         }
-    </script>
-</body>
 
+        // Ajouter un événement au bouton pour mettre à jour le tableau
+        document.getElementById('updateButton').addEventListener('click', updateTable);
+    </script>
+
+</body>
 </html>

@@ -1,55 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job06</title>
+    <title>Filtrer Pokémon</title>
 </head>
 
 <body>
-    <h1>Bienvenue à La Plateforme_ !</h1>
-    <p>Entrez le code Konami pour changer le style de la page.</p>
 
-    <script>
-        // Séquence du code Konami
-        const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
-        /* Haut, Haut, 
-                Bas, Bas, 
-                    Gauche, Droite, 
-                    Gauche, Droite,
-                                   B, A*/
+    <!-- Formulaire pour filtrer les Pokémon -->
+    <form id="filterForm">
+        <label for="id">ID :</label>
+        <input type="text" id="id" name="id"><br><br>
 
-        // Tableau pour stocker la séquence tapée par l'utilisateur
-        let userInput = [];
+        <label for="name">Nom (français) :</label>
+        <input type="text" id="name" name="name"><br><br>
 
-        // Écouter les touches appuyées sur le document
-        document.addEventListener('keydown', function(event) {
-            // Afficher la touche pressée dans la console
-            console.log("Touche appuyée : " + event.key);
+        <label for="type">Type :</label>
+        <select id="type" name="type">
+            <option value="">Tous</option>
+            <option value="Grass">Plante</option>
+            <option value="Poison">Poison</option>
+            <option value="Fire">Feu</option>
+            <option value="Water">Eau</option>
+            <option value="Electric">Électrique</option>
+            <!-- Ajoute d'autres types si nécessaire -->
+        </select><br><br>
 
-            // Ajouter la touche pressée dans le tableau (event.keyCode correspond à la touche)
-            userInput.push(event.keyCode);
+        <input type="button" id="filterButton" value="Filtrer">
+    </form>
 
-            // Si la séquence dépasse la longueur du code Konami, on enlève les premières entrées
-            if (userInput.length > konamiCode.length) {
-                userInput.shift(); // Supprimer le premier élément du tableau pour maintenir la longueur
-            }
+    <!-- Div pour afficher les résultats -->
+    <div id="results"></div>
 
-            // Vérifier si la séquence correspond au code Konami
-            if (JSON.stringify(userInput) === JSON.stringify(konamiCode)) {
-                activateKonamiCode(); // Appeler la fonction qui stylise la page
-            }
-        });
+    <!-- Inclure le fichier script.js -->
+    <script src="script.js"></script>
 
-        // Fonction à exécuter lorsque le code Konami est détecté
-        function activateKonamiCode() {
-            // Changer le fond de la page aux couleurs de La Plateforme_
-            document.body.style.backgroundColor = "#007bff"; // Bleu vif
-            document.body.style.color = "#ffffff"; // Texte en blanc
-            alert("Code Konami détecté ! La page est maintenant aux couleurs de La Plateforme_.");
-        }
-    </script>
 </body>
 
 </html>
