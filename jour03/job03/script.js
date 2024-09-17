@@ -1,81 +1,64 @@
-$(document).ready(function() {
-    const $board = $('#game-board');
-    const $tiles = $board.children();
-    let emptyTile = $('.empty');
+document.addEventListener("DOMContentLoaded", function() {
+    const gameBoard = document.getElementById("game-board");
+    const tiles = Array.from(document.getElementsByClassName("tile"));
+    let emptyTile = document.querySelector(".empty");
 
-    // Fonction pour mélanger les carreaux
+    // Fonction pour mélanger les carreaux au début de la partie
     function shuffleTiles() {
-        const tilesArray = $tiles.toArray();
-        tilesArray.sort(() => Math.random() - 0.5); // Mélanger aléatoirement
-        $board.empty(); // Vider le plateau
-        $.each(tilesArray, function(index, tile) {
-            $board.append(tile); // Réinsérer les carreaux mélangés
-        });
-        emptyTile = $('.empty'); // Mettre à jour la case vide
+        const tileArray = tiles.slice(0, 8); // Ne pas inclure la case vide dans le mélange
+        tileArray.sort(() => Math.random() - 0.5); // Mélange aléatoire
+        tileArray.forEach(tile => gameBoard.appendChild(tile)); // Réinsérer les carreaux mélangés dans la grille
+        gameBoard.appendChild(emptyTile); // S'assurer que la case vide est à la fin
     }
 
-    // Activer le drag-and-drop pour chaque carreau
-    function enableDragAndDrop() {
-        let draggedTile = null;
-
-        // Fonction pour démarrer le drag
-        $('.tile').on('dragstart', function(event) {
-            draggedTile = event.target;
-            event.originalEvent.dataTransfer.setData('text', event.target.dataset.position);
-        });
-
-        // Empêcher le comportement par défaut de dragover sur la case vide
-        $('.tile').on('dragover', function(event) {
-            event.preventDefault();
-        });
-
-        // Gérer le drop
-        $('.tile').on('drop', function(event) {
-            event.preventDefault();
-            const tileIndex = $(this).index();
-            const emptyIndex = emptyTile.index();
-
-            // Vérifier si le carreau déposé est adjacent à la case vide
-            const isAdjacent = Math.abs(tileIndex - emptyIndex) === 1 || Math.abs(tileIndex - emptyIndex) === 3;
-
-            if (isAdjacent) {
-                // Échanger la case vide et le carreau glissé
-                $(this).after(emptyTile);
-                $(emptyTile).after(draggedTile);
-                emptyTile = $(draggedTile); // Mettre à jour la case vide
-                checkWin(); // Vérifier si le puzzle est résolu
-            }
-        });
+    // Vérifier si deux cases sont adjacentes
+    function areAdjacent(tile1, tile2) {
+        const index1 = Array.prototype.indexOf.call(gameBoard.children, tile1);
+        const index2 = Array.prototype.indexOf.call(gameBoard.children, tile2);
+        const diff = Math.abs(index1 - index2);
+        return diff === 1 || diff === 3;
     }
 
-    // Vérifier si le puzzle est résolu
-    function checkWin() {
-        let isWin = true;
-        $('.tile').each(function(index) {
-            const position = $(this).data('position');
-            if (position !== index + 1) {
-                isWin = false;
-                return false;
-            }
-        });
+    // Déplacer un carreau vers la case vide
+    function moveTile(tile) {
+        if (areAdjacent(tile, emptyTile)) {
+            const emptyPos = emptyTile.dataset.position;
+            emptyTile.dataset.position = tile.dataset.position;
+            tile.dataset.position = emptyPos;
 
-        if (isWin) {
-            $('#message').text('Vous avez gagné !').addClass('success');
-            $('.tile').off('click').off('dragstart').off('drop'); // Désactiver les clics et le drag-and-drop
-            $('#restartButton').show(); // Montrer le bouton recommencer
+            gameBoard.insertBefore(tile, emptyTile); // Échanger les positions dans le DOM
         }
     }
 
+    // Vérifier si le joueur a gagné
+    function checkWin() {
+        let isWin = true;
+        tiles.forEach((tile, index) => {
+            if (tile.dataset.position != index + 1) {
+                isWin = false;
+            }
+        });
+        if (isWin) {
+            document.getElementById("message").textContent = "Vous avez gagné !";
+            document.getElementById("restartButton").style.display = "block"; // Afficher le bouton de recommencement
+        }
+    }
+
+    // Ajouter l'événement de clic sur chaque carreau
+    tiles.forEach(tile => {
+        tile.addEventListener("click", function() {
+            moveTile(tile);
+            checkWin();
+        });
+    });
+
     // Mélanger les carreaux au chargement de la page
     shuffleTiles();
-    enableDragAndDrop();
 
-    // Bouton recommencer
-    $('#restartButton').on('click', function() {
-        $('#message').empty(); // Vider le message
-        $('#message').removeClass('success');
-        shuffleTiles(); // Remélanger les carreaux
-        enableDragAndDrop(); // Réactiver le drag-and-drop
-        $(this).hide(); // Cacher le bouton "Recommencer"
+    // Recommencer la partie
+    document.getElementById("restartButton").addEventListener("click", function() {
+        this.style.display = "none"; // Cacher le bouton après avoir cliqué
+        shuffleTiles();
+        document.getElementById("message").textContent = "";
     });
 });
